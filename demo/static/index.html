@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FinEventAgent · 上市公司重大事件影响分析</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { DEFAULT:'#3B82F6', dark:'#2563EB', light:'#EFF6FF' },
+      up:   '#EF4444',
+      down: '#22C55E',
+      warn: '#F59E0B',
+      violet:'#8B5CF6',
+      page: '#F8FAFC',
+      line: '#E2E8F0',
+      t1: '#0F172A',
+      t2: '#475569',
+      t3: '#94A3B8',
+    },
+    fontFamily: { num: ['"SF Mono"','ui-monospace','Menlo','Consolas','monospace'] },
+    borderRadius: { xl: '12px' },
+  }},
+};
+</script>
+<style>
+  body{
+    background:#F8FAFC;
+    background-image:
+      radial-gradient(900px 320px at 15% -60px, rgba(59,130,246,.07), transparent 70%),
+      radial-gradient(700px 280px at 85% -80px, rgba(139,92,246,.05), transparent 70%);
+    background-repeat:no-repeat;
+  }
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:4px;}
+  ::-webkit-scrollbar-thumb:hover{background:#94A3B8;}
+  ::-webkit-scrollbar-track{background:transparent;}
+
+  .card{background:#fff;border-radius:12px;
+    box-shadow:0 1px 3px rgba(15,23,42,.06);transition:box-shadow .2s ease-out;}
+  .card:hover{box-shadow:0 6px 16px rgba(15,23,42,.10);}
+
+  .pill{font-size:11px;padding:3px 10px;border-radius:999px;white-space:nowrap;font-weight:500;}
+
+  @keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.35)}50%{box-shadow:0 0 0 6px rgba(59,130,246,0)}}
+  .step-running{animation:breathe 1.4s ease-out infinite;}
+  @keyframes checkIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+  .step-done{animation:checkIn .25s ease-out both;}
+
+  @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+  .skeleton{background:linear-gradient(90deg,#F1F5F9 25%,#E2E8F0 50%,#F1F5F9 75%);background-size:800px 100%;animation:shimmer 1.4s infinite;border-radius:8px;}
+
+  input,select,textarea{transition:border-color .15s, box-shadow .15s;}
+  input:focus,select:focus,textarea:focus{border-color:#3B82F6 !important;box-shadow:0 0 0 3px rgba(59,130,246,.12);outline:none;}
+
+  .btn-primary{background:#3B82F6;color:#fff;border-radius:8px;font-weight:600;
+    box-shadow:0 1px 3px rgba(59,130,246,.25);transition:all .15s;}
+  .btn-primary:hover{background:#2563EB;box-shadow:0 4px 12px rgba(59,130,246,.3);}
+  .btn-primary:active{transform:scale(.98);}
+  .btn-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+
+  .layer-card{border-left:3px solid transparent;}
+  .layer-card.l1{border-left-color:#3B82F6;}
+  .layer-card.l2{border-left-color:#8B5CF6;}
+  .layer-card.l3{border-left-color:#F59E0B;}
+  .layer-card.l4{border-left-color:#22C55E;}
+  .layer-card.data{border-left-color:#64748B;}
+
+  .template-chip{font-size:12px;padding:6px 14px;border-radius:999px;border:1px solid #E2E8F0;background:#fff;color:#475569;cursor:pointer;transition:all .15s;}
+  .template-chip:hover{border-color:#3B82F6;color:#3B82F6;background:#EFF6FF;}
+  .action-card{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border-radius:10px;border:1px solid #E2E8F0;background:#fff;text-align:left;transition:all .15s;cursor:pointer;}
+  .action-card:hover{border-color:#93C5FD;background:#F8FAFC;}
+  .action-card.active{border-color:#3B82F6;background:#EFF6FF;box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+  .diff-card{border-left:3px solid #3B82F6;}
+  .diff-up{color:#EF4444;}
+  .diff-down{color:#22C55E;}
+  .diff-same{color:#94A3B8;}
+
+  .msg-user{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px 12px 4px 12px;}
+  .msg-agent{background:#fff;border:1px solid #E2E8F0;border-radius:12px 12px 12px 4px;}
+
+  .layer-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .layer-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+  .layer-icon.done{background:#22C55E;}
+  .layer-icon.running{background:#3B82F6;animation:breathe 1.4s ease-out infinite;}
+  .layer-icon.pending{background:#E2E8F0;color:#94A3B8;}
+
+  .param-panel{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:16px;margin-top:12px;}
+  .metric-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #F1F5F9;font-size:12px;}
+  .metric-row:last-child{border-bottom:none;}
+  .chart-box{width:100%;height:220px;}
+  .chart-box-sm{width:100%;height:180px;}
+  .src-tag{font-size:10px;padding:1px 6px;border-radius:4px;background:#F1F5F9;color:#64748B;white-space:nowrap;}
+  .score-bar{height:6px;border-radius:3px;background:#F1F5F9;overflow:hidden;}
+  .score-bar>div{height:100%;border-radius:3px;}
+</style>
+</head>
+<body class="text-t2 text-[13px] antialiased">
+
+<header class="h-14 flex items-center justify-between px-4 md:px-8 bg-white/90 backdrop-blur border-b border-line sticky top-0 z-50">
+  <div class="flex items-center gap-3 min-w-0">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-500/25" style="background:linear-gradient(135deg,#3B82F6,#6366F1)">F</div>
+    <div class="min-w-0">
+      <p class="font-semibold text-t1 leading-tight truncate text-[14px]">FinEventAgent</p>
+      <p class="text-[10px] text-t3 leading-tight truncate hidden sm:block">四层专业框架 · 进门 MCP 驱动</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2 text-xs shrink-0">
+    <span id="modeBadge" class="pill" style="background:#F1F5F9;color:#64748B">连接中…</span>
+    <span id="mcpBadge" class="pill hidden" style="background:#EFF6FF;color:#3B82F6">进门 MCP</span>
+    <button onclick="exportReport()" id="exportBtn" class="hidden text-[11px] text-brand border border-brand/40 rounded-lg px-3 py-1.5 hover:bg-brand-light">导出报告</button>
+    <button onclick="resetHome()" id="newBtn" class="hidden text-[11px] text-t3 border border-line rounded-lg px-3 py-1.5 hover:bg-page">新分析</button>
+  </div>
+</header>
+
+<main class="max-w-[960px] mx-auto px-4 py-8">
+
+  <!-- 首页输入 -->
+  <div id="homeSection" class="min-h-[70vh] flex flex-col items-center justify-center">
+    <div class="w-16 h-16 rounded-2xl bg-white border border-line flex items-center justify-center mb-6 shadow-sm"
+         style="background:linear-gradient(135deg,#EFF6FF,#F5F3FF)">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round">
+        <path d="M3 17l5-6 4 4 6-8 3 4"/><circle cx="21" cy="11" r="1" fill="#3B82F6"/>
+      </svg>
+    </div>
+    <h1 class="text-t1 font-semibold text-xl mb-2">FinEventAgent</h1>
+    <p class="text-t3 text-sm mb-8 text-center">输入上市公司重大事件，自动完成<br/>事实核验 → 基本面/舆情 → 估值 → 持仓 全流程分析</p>
+
+    <div class="w-full max-w-[760px]">
+      <div class="card p-4">
+        <textarea id="eventInput" rows="4"
+          placeholder="描述事件，如：宁德时代发布2025年半年报，营收1789亿元同比-7.3%，海外业务收入占比从18%提升至32%…"
+          class="w-full bg-transparent border-0 resize-none text-t1 text-sm leading-relaxed focus:ring-0 focus:outline-none"></textarea>
+        <div class="flex items-center justify-between mt-3 pt-3 border-t border-line">
+          <button onclick="toggleParamPanel()" class="text-[11px] text-t3 hover:text-brand flex items-center gap-1">
+            ⚙️ 持仓参数
+          </button>
+          <button id="analyzeBtn" onclick="startAnalyze()" class="btn-primary px-6 h-9 text-[13px]">开始分析</button>
+        </div>
+
+        <div id="paramPanel" class="param-panel hidden mt-3">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <label class="flex flex-col gap-1"><span class="text-t3">公司名称</span>
+              <input id="companyName" value="宁德时代" class="h-8 bg-white border border-line rounded-lg px-2.5 text-t1"/></label>
+            <label class="flex flex-col gap-1"><span class="text-t3">股票代码</span>
+              <input id="stockCode" value="sz300750" class="h-8 bg-white border border-line rounded-lg px-2.5 text-t1 font-num"/></label>
+            <label class="flex flex-col gap-1"><span class="text-t3">仓位占比 %</span>
+              <input id="posRatio" type="number" value="5" min="0" max="100" step="0.5" class="h-8 bg-white border border-line rounded-lg px-2.5 text-t1 font-num"/></label>
+            <label class="flex flex-col gap-1"><span class="text-t3">成本价 ¥</span>
+              <input id="costBasis" type="number" placeholder="0" step="0.01" class="h-8 bg-white border border-line rounded-lg px-2.5 text-t1 font-num"/></label>
+            <label class="flex flex-col gap-1"><span class="text-t3">持有期限</span>
+              <select id="horizon" class="h-8 bg-white border border-line rounded-lg px-2.5 text-t1">
+                <option value="short">短期（&lt;1月）</option>
+                <option value="medium" selected>中期（1-6月）</option>
+                <option value="long">长期（&gt;6月）</option>
+              </select></label>
+            <label class="flex flex-col gap-1"><span class="text-t3">风险偏好</span>
+              <select id="risk" class="h-8 bg-white border border-line rounded-lg px-2.5 text-t1">
+                <option value="low">保守</option>
+                <option value="medium" selected>稳健</option>
+                <option value="high">激进</option>
+              </select></label>
+            <label class="flex flex-col gap-1 md:col-span-2"><span class="text-t3">事件类型</span>
+              <select id="eventType" class="h-8 bg-white border border-line rounded-lg px-2.5 text-t1">
+                <option>财报披露</option><option>分红派息</option><option>定增/融资</option><option>大股东减持</option>
+                <option>并购重组</option><option>重大合同</option><option>监管处罚</option><option>其他</option>
+              </select></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mt-4 justify-center">
+        <button class="template-chip" onclick="fillTemplate(0)">宁德时代2025半年报</button>
+        <button class="template-chip" onclick="fillTemplate(1)">比亚迪高管变动</button>
+        <button class="template-chip" onclick="fillTemplate(2)">隆基绿能产能调整</button>
+        <button class="template-chip" onclick="fillTemplate(3)">医药公司监管处罚</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 对话流 -->
+  <div id="chatSection" class="hidden space-y-4 pb-48">
+    <div id="userMsg" class="msg-user p-4 text-sm text-t1 max-w-[90%] ml-auto"></div>
+    <div id="stepFlow" class="space-y-3"></div>
+    <div id="refineHistory" class="space-y-3"></div>
+    <div id="summaryCard" class="hidden card p-5 border-l-4" style="border-left-color:#3B82F6">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="pill" style="background:#EFF6FF;color:#3B82F6">综合结论</span>
+      </div>
+      <p class="text-sm text-t1 leading-relaxed" id="summaryText"></p>
+    </div>
+  </div>
+</main>
+
+<!-- 底部：结构化继续分析面板 -->
+<div id="followUpBar" class="hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-line z-40 shadow-[0_-4px_20px_rgba(15,23,42,.06)]">
+  <div class="max-w-[960px] mx-auto px-4 py-3">
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-xs font-medium text-t1">继续分析 · 选择要调整的模块</p>
+      <p class="text-[10px] text-t3" id="refineHint">仅重跑选中层级，保留上游结论</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2" id="actionCards">
+      <button type="button" class="action-card" data-cmd="rerun_l4" onclick="pickAction(this)">
+        <span class="font-medium text-t1">改持仓假设</span>
+        <span class="text-[10px] text-t3">只重算 L4</span>
+      </button>
+      <button type="button" class="action-card" data-cmd="rerun_l3" onclick="pickAction(this)">
+        <span class="font-medium text-t1">调估值参数</span>
+        <span class="text-[10px] text-t3">重算 L3 → L4</span>
+      </button>
+      <button type="button" class="action-card" data-cmd="rerun_l2" onclick="pickAction(this)">
+        <span class="font-medium text-t1">刷新舆情</span>
+        <span class="text-[10px] text-t3">重算 L2 → L4</span>
+      </button>
+      <button type="button" class="action-card" data-cmd="refresh_data" onclick="pickAction(this)">
+        <span class="font-medium text-t1">刷新底层数据</span>
+        <span class="text-[10px] text-t3">MCP → 全链路</span>
+      </button>
+    </div>
+    <div id="refinePanel" class="hidden border border-line rounded-xl bg-page p-3 mb-2 text-xs"></div>
+    <div id="refinePreview" class="hidden text-[11px] text-t3 mb-2 px-1"></div>
+    <div class="flex gap-2 justify-end">
+      <button id="cancelRefineBtn" onclick="cancelAction()" class="hidden text-[12px] text-t3 border border-line rounded-lg px-4 h-9 hover:bg-page">取消</button>
+      <button id="confirmRefineBtn" onclick="confirmRefine()" disabled class="btn-primary px-5 h-9 text-[12px] shrink-0">确认重算</button>
+    </div>
+  </div>
+</div>
+
+<!-- 溯源浮层 -->
+<div id="traceDrawer" class="fixed inset-y-0 right-0 w-[400px] max-w-[90vw] bg-white border-l border-line shadow-xl transform translate-x-full transition-transform duration-200 z-50">
+  <div class="p-4 border-b border-line flex items-center justify-between">
+    <p class="font-semibold text-t1 text-sm">数据溯源</p>
+    <button onclick="toggleTraceDrawer(false)" class="text-t3 hover:text-t1 text-lg leading-none">×</button>
+  </div>
+  <div id="traceContent" class="p-4 overflow-y-auto" style="height:calc(100% - 57px)"></div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

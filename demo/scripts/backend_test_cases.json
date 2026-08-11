@@ -1,0 +1,362 @@
+[
+  {
+    "id": "T01",
+    "group": "分红",
+    "name": "分红-标准派现",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代发布2024年度利润分配方案，拟每10股派发现金红利45.57元（含税），合计派现约200亿元，分红率约50%。",
+      "event_type": "分红派息",
+      "position_ratio": 5.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "dividend", "keywords_any": ["分红", "派息", "股息", "派现"], "time_scope": "2024", "derived_keys": ["dps", "payout_ratio", "dividend_yield"], "strategy_direction": "hold" }
+  },
+  {
+    "id": "T02",
+    "group": "分红",
+    "name": "分红-特别分红+重仓低风险",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代公告特别分红方案，拟10派20元，同时宣布2025年常规分红率不低于40%。",
+      "event_type": "分红派息",
+      "position_ratio": 18.0,
+      "investment_horizon": "long",
+      "risk_tolerance": "low"
+    },
+    "expect": { "profile_class": "dividend", "derived_keys": ["dps", "payout_ratio"], "strategy_direction": "hold" }
+  },
+  {
+    "id": "T03",
+    "group": "分红",
+    "name": "分红-跨公司泛化(贵州茅台)",
+    "payload": {
+      "company_name": "贵州茅台",
+      "stock_code": "sh600519",
+      "event_description": "贵州茅台2024年度分红方案落地，每10股派发现金红利276.24元（含税），全年分红率75%。",
+      "event_type": "分红派息",
+      "position_ratio": 8.0,
+      "investment_horizon": "long",
+      "risk_tolerance": "low"
+    },
+    "expect": { "profile_class": "dividend", "keywords_any": ["分红", "派息", "股息", "派现"], "derived_keys": ["dps"], "strategy_direction": "hold" }
+  },
+  {
+    "id": "T04",
+    "group": "分红",
+    "name": "分红-无金额定性描述",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代表示将提高股东回报，未来三年分红率原则上不低于50%，并研究常态化特别分红机制。",
+      "event_type": "分红派息",
+      "position_ratio": 5.0,
+      "investment_horizon": "long",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "dividend", "strategy_direction": "hold" }
+  },
+  {
+    "id": "T05",
+    "group": "财报",
+    "name": "财报-营收下滑但结构改善(基线)",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代2025H1营收同比下降12%，但海外业务收入占比从18%提升至32%。",
+      "event_type": "财报披露",
+      "position_ratio": 5.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "earnings", "time_scope": "2025H1", "strategy_direction": "any" }
+  },
+  {
+    "id": "T06",
+    "group": "财报",
+    "name": "财报-业绩超预期",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代2025年三季报：营收同比增长25%，归母净利润同比增长30%，毛利率环比提升2个百分点至26%，储能出货翻倍。",
+      "event_type": "财报披露",
+      "position_ratio": 6.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "high"
+    },
+    "expect": { "profile_class": "earnings", "time_scope_contains": "2025", "strategy_direction": "any" }
+  },
+  {
+    "id": "T07",
+    "group": "财报",
+    "name": "财报-业绩暴雷",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代2025Q3净利润同比大幅下滑40%，毛利率下降5个百分点，公司对部分存货和应收账款计提大额减值准备。",
+      "event_type": "财报披露",
+      "position_ratio": 10.0,
+      "investment_horizon": "short",
+      "risk_tolerance": "low"
+    },
+    "expect": { "profile_class": "earnings", "strategy_direction": "any" }
+  },
+  {
+    "id": "T08",
+    "group": "财报",
+    "name": "财报-纯定性无数字",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代发布三季报，整体业绩符合市场预期，海外储能业务增长强劲，国内动力电池份额保持稳定。",
+      "event_type": "财报披露",
+      "position_ratio": 5.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "earnings", "strategy_direction": "any" }
+  },
+  {
+    "id": "T09",
+    "group": "财报",
+    "name": "财报-跨公司泛化(比亚迪)",
+    "payload": {
+      "company_name": "比亚迪",
+      "stock_code": "sz002594",
+      "event_description": "比亚迪2025年三季报显示，营收同比增长18%，但净利润同比下滑8%，单车利润承压，海外销量占比升至25%。",
+      "event_type": "财报披露",
+      "position_ratio": 7.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "earnings", "strategy_direction": "any" }
+  },
+  {
+    "id": "T10",
+    "group": "再融资",
+    "name": "定增-募资扩产",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代公告拟定增募资不超过100亿元，用于匈牙利电池工厂二期扩产项目及补充流动资金。",
+      "event_type": "定增融资",
+      "position_ratio": 5.0,
+      "investment_horizon": "long",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "other", "keywords_any": ["定增", "增发", "募资"], "strategy_direction": "any" }
+  },
+  {
+    "id": "T11",
+    "group": "股东行为",
+    "name": "减持-大股东按比例",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代公告，持股5%以上股东黄世霖拟在未来6个月内通过大宗交易方式减持不超过公司总股本2%的股份。",
+      "event_type": "股东减持",
+      "position_ratio": 8.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "reduction", "derived_keys": ["reduction_mcap_pct"], "strategy_direction": "cautious" }
+  },
+  {
+    "id": "T12",
+    "group": "股东行为",
+    "name": "减持-高管按股数",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代副总经理因个人资金需求，拟减持500万股，占公司总股本约0.11%。",
+      "event_type": "股东减持",
+      "position_ratio": 4.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "low"
+    },
+    "expect": { "profile_class": "reduction", "derived_keys": ["reduction_amount"], "strategy_direction": "any" }
+  },
+  {
+    "id": "T13",
+    "group": "股东行为",
+    "name": "回购-注销式回购",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代拟以自有资金30亿-50亿元回购公司股份，回购价格不超过450元/股，回购股份将全部注销并减少注册资本。",
+      "event_type": "股份回购",
+      "position_ratio": 5.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "other", "keywords_any": ["回购"], "strategy_direction": "any" }
+  },
+  {
+    "id": "T14",
+    "group": "资本运作",
+    "name": "并购-收购锂矿",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代拟以65亿元收购江西某锂矿公司80%股权，标的公司拥有年产5万吨碳酸锂当量的采选产能。",
+      "event_type": "并购重组",
+      "position_ratio": 6.0,
+      "investment_horizon": "long",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "other", "keywords_any": ["并购", "收购"], "strategy_direction": "any" }
+  },
+  {
+    "id": "T15",
+    "group": "监管风险",
+    "name": "处罚-监管立案",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代公告收到证监会《立案告知书》，因公司涉嫌信息披露违法违规，证监会决定对公司立案调查。",
+      "event_type": "监管处罚",
+      "position_ratio": 9.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "low"
+    },
+    "expect": { "profile_class": "other", "keywords_any": ["处罚", "立案", "违规"], "strategy_direction": "any" }
+  },
+  {
+    "id": "T16",
+    "group": "经营事件",
+    "name": "中标-海外大额订单",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代与欧洲某头部车企签订长期供货协议，2026-2030年累计供应动力电池约50GWh，预计合同总金额超过400亿元。",
+      "event_type": "重大合同",
+      "position_ratio": 5.0,
+      "investment_horizon": "long",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "other", "keywords_any": ["中标", "订单", "合同", "供货"], "strategy_direction": "any" }
+  },
+  {
+    "id": "T17",
+    "group": "经营事件",
+    "name": "产能扩张-新建基地",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代拟投资200亿元在四川宜宾建设动力电池生产基地六期项目，规划年产能40GWh，预计2027年投产。",
+      "event_type": "产能扩张",
+      "position_ratio": 5.0,
+      "investment_horizon": "long",
+      "risk_tolerance": "high"
+    },
+    "expect": { "profile_class": "other", "keywords_any": ["产能", "扩产", "投产"], "strategy_direction": "any" }
+  },
+  {
+    "id": "T18",
+    "group": "边界",
+    "name": "边界-极短模糊输入",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "公司发了个公告。",
+      "event_type": "其他",
+      "position_ratio": 5.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "any", "strategy_direction": "any" }
+  },
+  {
+    "id": "T19",
+    "group": "边界",
+    "name": "边界-复合事件(分红+定增)",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代发布2024年报，拟每10股派现25元；同时公告拟定增募资80亿元用于钠离子电池产线建设。",
+      "event_type": "财报披露",
+      "position_ratio": 6.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "any", "strategy_direction": "any" }
+  },
+  {
+    "id": "T20",
+    "group": "边界",
+    "name": "边界-极端仓位+短线+利空",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代2025Q3净利润同比下滑35%，主要客户推迟提货，公司下调全年出货指引。",
+      "event_type": "财报披露",
+      "position_ratio": 90.0,
+      "investment_horizon": "short",
+      "risk_tolerance": "low"
+    },
+    "expect": { "profile_class": "earnings", "strategy_direction": "cautious" }
+  },
+  {
+    "id": "T21",
+    "group": "边界",
+    "name": "边界-空仓遇利好",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "宁德时代发布新一代神行Pro电池，充电10分钟续航800公里，已获得多家车企定点，预计2026年量产。",
+      "event_type": "产品发布",
+      "position_ratio": 0.0,
+      "investment_horizon": "long",
+      "risk_tolerance": "high"
+    },
+    "expect": { "profile_class": "any", "strategy_direction": "any" }
+  },
+  {
+    "id": "T22",
+    "group": "边界",
+    "name": "边界-错误数字待核验",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "网传宁德时代2025H1营收同比增长500%，净利润突破2000亿元，股价将翻倍。",
+      "event_type": "财报披露",
+      "position_ratio": 5.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "earnings", "expect_discrepancy": true, "strategy_direction": "any" }
+  },
+  {
+    "id": "T23",
+    "group": "边界",
+    "name": "边界-长噪音文本",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "最近新能源板块波动很大，我看了很多研报，有人说碳酸锂价格见底了，也有人说产能过剩还要持续两年。昨天刷到消息说宁德时代2025年上半年归母净利润同比增长18%，达到305亿元，经营性现金流也很充裕。另外我还持有一些比亚迪和亿纬锂能，主要想先了解宁德这个事儿对我持仓的影响。",
+      "event_type": "财报披露",
+      "position_ratio": 12.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "earnings", "time_scope_contains": "2025", "strategy_direction": "any" }
+  },
+  {
+    "id": "T24",
+    "group": "边界",
+    "name": "边界-中英混杂输入",
+    "payload": {
+      "company_name": "宁德时代",
+      "stock_code": "sz300750",
+      "event_description": "CATL announces 2025 interim dividend: 每10股派现12元, payout ratio about 30%, 市场普遍认为力度超预期。",
+      "event_type": "分红派息",
+      "position_ratio": 5.0,
+      "investment_horizon": "medium",
+      "risk_tolerance": "medium"
+    },
+    "expect": { "profile_class": "dividend", "derived_keys": ["dps"], "strategy_direction": "hold" }
+  }
+]

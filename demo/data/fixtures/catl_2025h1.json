@@ -1,0 +1,61 @@
+{
+  "company": {
+    "name": "宁德时代",
+    "ticker": "300750.SZ",
+    "industry": "动力电池 / 储能",
+    "coverage_team": "新能源组"
+  },
+  "event": {
+    "title": "宁德时代发布2025年半年度报告要点（样例）",
+    "type": "财报披露",
+    "time": "2025-08-01",
+    "summary": "2025H1营收同比下降12%，但海外业务收入占比从18%提升至32%；储能业务增速显著高于动力电池。"
+  },
+  "announcement_excerpt": [
+    "报告期内实现营业收入约1,560亿元，同比下降约12%。",
+    "归母净利润约220亿元，同比下降约8%；毛利率约26.5%，同比提升约1.2pct。",
+    "海外业务收入占比由上年同期约18%提升至约32%。",
+    "动力电池出货量稳健，储能电池出货量同比高增，海外储能订单贡献提升。",
+    "公司继续推进匈牙利工厂建设，欧洲本地化产能按计划落地。"
+  ],
+  "financial_snapshot": {
+    "revenue_yoy": -0.12,
+    "net_profit_yoy": -0.08,
+    "gross_margin": 0.265,
+    "gross_margin_yoy_pct": 0.012,
+    "overseas_revenue_share": 0.32,
+    "overseas_revenue_share_prev": 0.18,
+    "energy_storage_shipment_yoy": 0.55,
+    "ev_battery_shipment_yoy": 0.06,
+    "cash_and_equivalents_bny": 980,
+    "capex_focus": ["欧洲本地化", "储能产能", "钠电中试"]
+  },
+  "demo_sentiment": {
+    "total_mentions": 187,
+    "channel_distribution": [
+      {"channel": "内资研报", "count": 78},
+      {"channel": "财经媒体", "count": 65},
+      {"channel": "股吧/论坛", "count": 34},
+      {"channel": "公众号", "count": 10}
+    ],
+    "time_distribution": [
+      {"date": "2025-08-01", "count": 12},
+      {"date": "2025-08-02", "count": 48},
+      {"date": "2025-08-03", "count": 89},
+      {"date": "2025-08-04", "count": 28},
+      {"date": "2025-08-05", "count": 10}
+    ],
+    "top_keywords": [
+      {"keyword": "海外出海", "frequency": 45},
+      {"keyword": "毛利率改善", "frequency": 38},
+      {"keyword": "价格战缓解", "frequency": 32},
+      {"keyword": "国内需求疲软", "frequency": 28},
+      {"keyword": "储能放量", "frequency": 24}
+    ],
+    "emotion_distribution": [
+      {"emotion": "中性", "count": 97},
+      {"emotion": "正面", "count": 58},
+      {"emotion": "负面", "count": 32}
+    ]
+  }
+}

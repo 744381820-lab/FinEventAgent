@@ -1,0 +1,77 @@
+{
+  "_readme": "统一业务与运行配置（可入库）。密钥一律放 .env / 云 Secrets，勿写入本文件。修改后重启服务生效。",
+
+  "runtime": {
+    "run_mode": "auto",
+    "jinmen_mcp_url": "https://mcp-server-global.comein.cn/mcp-servers/mcp-server-brm/sse",
+    "jinmen_mcp_timeout": 45
+  },
+
+  "llm": {
+    "enabled": true,
+    "provider": "openai_compatible",
+    "base_url": "https://aiapi.gyasset.com/v1",
+    "model": "qwen3.7-plus",
+    "timeout": 90,
+    "circuit_seconds": 600,
+    "temperature_extract": 0.1,
+    "temperature_narrative": 0.2,
+    "features": {
+      "event_extract": true,
+      "fundamental_narrative": true
+    },
+    "_notes": [
+      "API Key 仅通过环境变量 LLM_API_KEY 注入",
+      "公网不可达时客户端自动熔断，降级为规则模板",
+      "换供应商：改 base_url + model，保持 OpenAI 兼容 /v1/chat/completions",
+      "关闭增强：enabled=false 或对应 features 置 false"
+    ]
+  },
+
+  "sentiment": {
+    "jinmen_weight": 0.9,
+    "web_weight": 0.1,
+    "web_search_enabled": true,
+    "web_search_provider": "bing_html",
+    "web_search_max_results": 8,
+    "jinmen_top_k": 25
+  },
+
+  "valuation": {
+    "models": ["pe", "dcf"],
+    "pe": {
+      "label": "估值模型1 · PE 估值法",
+      "pre_net_profit_yi": 480.0,
+      "profit_revision": -0.05,
+      "pre_pe": 25.0,
+      "post_pe": 26.0,
+      "assumptions": [
+        "事件前 2025E 归母净利润 480 亿元（一致预期）",
+        "事件后净利润预测下修 5%",
+        "海外业务占比提升，给予 PE 溢价 1 倍"
+      ]
+    },
+    "dcf": {
+      "label": "估值模型2 · 简化 DCF（三阶段）",
+      "fcf0_yi": 350.0,
+      "wacc": 8.5,
+      "growth1": 8.0,
+      "growth2": 5.0,
+      "terminal_growth": 2.5,
+      "years1": 3,
+      "years2": 7,
+      "pre_event_discount": 0.98,
+      "assumptions": [
+        "以 2024 年自由现金流 350 亿元为基期",
+        "第一阶段 3 年增速 8%，第二阶段 7 年增速 5%，永续 2.5%",
+        "事件后海外增速上修、国内增速下修，WACC 维持 8.5% 不变"
+      ]
+    },
+    "fallback_price": 392.10,
+    "fallback_market_cap_yi": 18141.0
+  },
+
+  "strategy": {
+    "options": ["conservative", "neutral", "aggressive"]
+  }
+}

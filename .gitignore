@@ -1,0 +1,33 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+*.zip
+dist/
+.DS_Store
+node_modules/
+.idea/
+.vscode/
+demo/output/
+*.log
+demo/sse_out*.txt
+demo/sse_*.txt
+demo/*sse*.txt
+demo/server*.log
+demo/server*.err
+demo/test_results*/
+demo/scripts/dividend_sse*.txt
+_tmp_payload.json
+demo/scripts/_payload_tmp.json
+
+# 不入库：笔试原文、过程交接、独立设计长文（交付走邮件附件）
+HANDOFF.md
+docs/
+产品经理（AI方向） · 笔试题目.md
+产品经理（AI方向） · 笔试交付要求说明.md
+"产品经理（AI方向） · 笔试题目.md"
+"产品经理（AI方向） · 笔试交付要求说明.md"
+**/笔试*.md
