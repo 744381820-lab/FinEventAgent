@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: fineventagent
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHONPATH
+        value: /app
+      - key: RUN_MODE
+        value: hybrid
+      - key: JINMEN_MCP_KEY
+        sync: false
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        sync: false
+      - key: LLM_MODEL
+        sync: false

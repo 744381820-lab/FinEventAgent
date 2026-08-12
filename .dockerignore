@@ -1,0 +1,15 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.env
+*.zip
+dist
+demo/test_results*
+demo/output
+.idea
+.vscode
+HANDOFF.md
+docs
+*.log
