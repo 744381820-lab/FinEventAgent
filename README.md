@@ -63,13 +63,38 @@ flowchart LR
 ```bash
 pip install -r demo/requirements.txt
 cp .env.example .env   # 可选：填写 LLM / 进门 MCP Key
-python run.py          # http://localhost:8000
+python server.py       # 生产入口；开发可用 python run.py
+# 浏览器打开 http://localhost:8000
 ```
 
 Windows：
 
 ```powershell
-$env:PYTHONPATH = "$PWD"; python run.py
+$env:PYTHONPATH = "$PWD"; python server.py
+```
+
+### 临时公网演示
+
+本机已配置 Cloudflare Quick Tunnel（需本机服务保持运行）：
+
+```powershell
+.\scripts\start_public_demo.ps1
+```
+
+终端会打印 `https://xxxx.trycloudflare.com` 链接。更稳定的长期部署见下方 Docker / Render。
+
+## 线上部署（长期）
+
+仓库已包含 `Dockerfile` 与 `render.yaml`。推荐：
+
+1. 在 [Render](https://render.com) 连接本仓库，按 Docker 部署  
+2. 在控制台注入 Secrets：`JINMEN_MCP_KEY`（可选 `LLM_API_KEY`）  
+3. 建议 `RUN_MODE=hybrid`（公网不一定能访问内网 LLM）
+
+```bash
+# 本地构建自测（需 Docker）
+docker build -t fineventagent .
+docker run --rm -p 8000:8000 -e JINMEN_MCP_KEY=xxx -e RUN_MODE=hybrid fineventagent
 ```
 
 ## 运行模式与配置

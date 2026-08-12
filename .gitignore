@@ -22,6 +22,8 @@ demo/test_results*/
 demo/scripts/dividend_sse*.txt
 _tmp_payload.json
 demo/scripts/_payload_tmp.json
+tools/
+
 
 # 不入库：笔试原文、过程交接、独立设计长文（交付走邮件附件）
 HANDOFF.md
